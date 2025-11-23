@@ -1,0 +1,10 @@
+Django>=4.2,<5.0
+djangorestframework>=3.14
+python-decouple>=3.8
+psycopg2-binary>=2.9  # si usas PostgreSQL
+gunicorn>=21.2
+pymongo
+reportlab
+openpyxl
+mysql-connector-python
+PyJWT>=2.7
