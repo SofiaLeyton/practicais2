@@ -3,7 +3,7 @@ version: "3.8"
 services:
 
   # ==========================
-  #  BASE DE DATOS MONGO ÚNICA
+  # BASE DE DATOS MONGO
   # ==========================
   mongodb:
     image: mongo:4.4
@@ -16,10 +16,9 @@ services:
       - micro_net
     restart: always
 
-
-  # =====================
-  #  MICROSERVICIO PRODUCTOS
-  # =====================
+  # ==========================
+  # MICROSERVICIO PRODUCTOS
+  # ==========================
   microservicio_productos:
     build: ./contenedor_productos
     container_name: microservicio_productos
@@ -33,10 +32,9 @@ services:
       - micro_net
     restart: always
 
-
-  # =====================
-  #  MICROSERVICIO PEDIDOS
-  # =====================
+  # ==========================
+  # MICROSERVICIO PEDIDOS
+  # ==========================
   pedidos_api:
     build: ./contenedor_pedidos
     container_name: pedidos_api
@@ -50,10 +48,9 @@ services:
       - micro_net
     restart: always
 
-
-  # =====================
-  #  MICROSERVICIO REPORTES
-  # =====================
+  # ==========================
+  # MICROSERVICIO REPORTES
+  # ==========================
   microservicio_reportes:
     build: ./contenedor_reportes
     container_name: microservicio_reportes
@@ -68,9 +65,8 @@ services:
       - micro_net
     restart: always
 
-
   # ==========================
-  #  MICROSERVICIO CORREOS (LARAVEL)
+  # MICROSERVICIO CORREOS (LARAVEL)
   # ==========================
   correos_app:
     build: ./contenedor_correos
@@ -103,9 +99,8 @@ services:
       - micro_net
     restart: always
 
-
   # ==========================
-  #  MICROSERVICIO SEGURIDAD (PHP/APACHE)
+  # MICROSERVICIO SEGURIDAD (PHP/APACHE)
   # ==========================
   seguridad_app:
     build:
@@ -114,24 +109,12 @@ services:
     restart: always
     volumes:
       - ./contenedor_seguridad/microservicio_seguridad:/var/www
+    ports:
+      - "8003:80"  # Exponer Apache directamente
     depends_on:
       - seguridad_db
     networks:
-      - seguridad_network
-
-  seguridad_nginx:
-    image: nginx:latest
-    container_name: seguridad_nginx
-    restart: always
-    ports:
-      - "8003:80"  # Este es el puerto para tu API
-    volumes:
-      - ./contenedor_seguridad/microservicio_seguridad:/var/www
-      - ./contenedor_seguridad/microservicio_seguridad/nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - seguridad_app
-    networks:
-      - seguridad_network
+      - micro_net
 
   seguridad_db:
     image: mysql:8.0
@@ -147,48 +130,34 @@ services:
     volumes:
       - seguridad_db_data:/var/lib/mysql
     networks:
-      - seguridad_network
+      - micro_net
 
-
-
+  # ==========================
+  # GATEWAY 
+  # ==========================
   gateway:
     build:
       context: ./gateway
-      dockerfile: Dockerfile
     container_name: gateway
     restart: always
     volumes:
       - ./gateway:/var/www
+    ports:
+      - "9000:80"
     networks:
       - micro_net
 
-  nginx_gateway:
-    image: nginx:latest
-    container_name: nginx_gateway
-    restart: always
-    ports:
-      - "9000:80"
-    volumes:
-      - ./gateway:/var/www
-      - ./gateway/nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - gateway
-    networks:
-      - micro_net
 # ==========================
-# RED COMPARTIDA PARA TODO
+# RED
 # ==========================
 networks:
   micro_net:
     driver: bridge
 
-  seguridad_network:
-    driver: bridge
 # ==========================
-# VOLUMENES COMPARTIDOS
+# VOLUMES
 # ==========================
 volumes:
   mongo_data:
   correos_data:
-  seguridad_data:
   seguridad_db_data:

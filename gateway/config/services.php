@@ -34,5 +34,14 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
+    
+    'ms' => [
+        'pedidos'   => env('MS_PEDIDOS'),
+        'productos' => env('MS_PRODUCTOS'),
+        'reportes'  => env('MS_REPORTES'),
+        'correos'   => env('MS_CORREOS'),
+        'seguridad' => env('MS_SEGURIDAD'), 
+    ],
 ];
+
+

@@ -1,6 +1,6 @@
-FROM php:8.2-fpm
+FROM php:8.2-apache
 
-# Extensiones necesarias
+# Instalar dependencias y extensiones necesarias
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -8,20 +8,29 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libpq-dev \
     libzip-dev \
-    libonig-dev && \
-    docker-php-ext-install pdo pdo_mysql
+    libonig-dev \
+    && docker-php-ext-install pdo pdo_mysql \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Instalar Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
+# Establecer carpeta de trabajo en /var/www
 WORKDIR /var/www
 
+# Copiar todo el proyecto
 COPY . .
 
+# Instalar dependencias de Composer
 RUN composer install --no-interaction
 
+# Permisos para Laravel
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-EXPOSE 9000
+# Apuntar Apache al directorio public de Laravel
+RUN sed -i 's#/var/www/html#/var/www/public#g' /etc/apache2/sites-available/000-default.conf
 
-CMD ["php-fpm"]
+# Activar mod_rewrite de Apache
+RUN a2enmod rewrite
+
+EXPOSE 80
+
+CMD ["apache2-foreground"]

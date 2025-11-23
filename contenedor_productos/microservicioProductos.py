@@ -22,7 +22,7 @@ productos_collection = db['productos']
 @app.before_request
 def verificar_todo():
     # Estas rutas públicas no requieren token
-    rutas_publicas = ["/", "/login", "/verProducto",  "/crearProducto", "/health"]
+    rutas_publicas = ["/", "/login", "/verProducto",  "/crearProducto", "/eliminarProducto","/health"]
 
     if request.path in rutas_publicas:
         return None  #Entonces se permite el acceso sin token
@@ -115,25 +115,6 @@ def ver_producto(nombre):
         return jsonify({"mensaje": f"No se encontró el producto '{nombre}'"}), 404
     return jsonify(convert_mongo_to_json([producto])[0]), 200
 
-@app.route("/generarReportes", methods=["GET"])
-def exportar_productos():
-    productos = list(productos_collection.find())
-    if not productos:
-        return jsonify({"mensaje": "No hay productos en la base de datos"}), 404
-
-    df = pd.DataFrame(convert_mongo_to_json(productos))
-    formato = request.args.get("formato", "csv")
-    buffer = io.BytesIO()
-
-    if formato == "excel":
-        df.to_excel(buffer, index=False)
-        buffer.seek(0)
-        return send_file(buffer, as_attachment=True, download_name="productos.xlsx",
-                         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    else:
-        df.to_csv(buffer, index=False)
-        buffer.seek(0)
-        return send_file(buffer, as_attachment=True, download_name="productos.csv", mimetype="text/csv")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
