@@ -1,0 +1,34 @@
+# --- Python / Django ---
+venv/
+.env
+*.env
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+*.pot
+*.sqlite3
+*.pyc
+*.local
+
+# Archivos del editor
+.vscode/
+.idea/
+.DS_Store
+
+# Archivos estáticos y media
+staticfiles/
+media/
+
+# Migraciones opcionales
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# --- PHP / Composer ---
+vendor/
+composer.lock
+
+# --- Sistema ---
+*.bak
+Thumbs.db
