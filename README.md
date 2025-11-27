@@ -1,17 +1,18 @@
-🧱 Microservicios Incluidos 🔑 1. Microservicio de Seguridad (seguridad_app)
+# Microservicios Incluidos 
+🔑 1. Microservicio de Seguridad (seguridad_app)
 Tecnologías: Laravel + PHP-FPM
 Funcionalidades: Registro de usuarios/manejo de roles Login Logout Recuperación de contraseña Corre en el puerto interno 80 del contenedor (mapeado a 8003 local)
 
 ⚙️ Instalación
-# Entrar al directorio del microservicio
+#Entrar al directorio del microservicio
 cd microservicio_seguridad
-# Instalar dependencias
+#Instalar dependencias
 composer install
-# Copiar archivo de entorno y configurar la conexión a MySQL
+#Copiar archivo de entorno y configurar la conexión a MySQL
 cp .env.example .env
-# Generar la key de la aplicación
+#Generar la key de la aplicación
 php artisan key:generate
-# Ejecutar migraciones
+#Ejecutar migraciones
 php artisan migrate
 
 📦 2. Microservicio de Productos (microservicio_productos) Tecnologías: Python (Flask / FastAPI) Funcionalidades: CRUD de productos Puerto interno: 5000
@@ -22,7 +23,7 @@ php artisan migrate
 
 🛒 5. Microservicio de Pedidos (pedidos_api) Tecnologías: Python Funcionalidades: Gestión de pedidos Puerto interno: 5001
 
-🧪 Pruebas Realizadas
+# Pruebas Realizadas
 Se hicieron pruebas funcionales de:
 autenticación (Seguridad),
 CRUD de productos,
@@ -34,7 +35,7 @@ cantidad máxima de usuarios concurrentes,
 tiempos de respuesta por microservicio,
 estabilidad bajo carga.
 
-▶️ Cómo iniciar cada microservicio
+# Cómo iniciar cada microservicio
 🔐 1. Microservicio de Seguridad (Laravel – PHP)
 cd microservicio_seguridad
 php artisan serve
@@ -54,6 +55,6 @@ Este no es necesario iniciarlo, cuando se realiza un pedido el microservicio cor
 cd microservicio_reportes
 python microservicioR.py runserver
 
-EJEMPLO DE PRUEBA CON THUNDER: 
+# EJEMPLO DE PRUEBA CON THUNDER: 
 POST http://127:0.0.1.5001/crearPedido Content-Type: application/json { "cliente": "Sofia Leyton", "email": "sleyton@unal.edu.cp", "producto": "Mouse", "cantidad": 80, "total": 125000 }
 RESPUESTA: { "mensaje": "Pedido creado correctamente y guardado en MongoDB", "pedido": { "_id": "69236e3c43e42e82c6c12f54", "cantidad": 80, "cliente": "Sofia Leyton", "email": "sleyton@unal.edu.co", "producto": "Mouse", "total": 125000 } } Y SE ENVIA EL CORREO AUTOMATICAMENTE AL GMAIL DE SLEYTON@UNAL.EDU.CO
